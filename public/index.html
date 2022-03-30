@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+      a {
+          margin: 0 10px;
+      }
+  </style>
+</head>
+<body>
+    <div>
+        history 记录
+        <button id='btn'> pushState /path</button>
+        <button id='btn2'> pushState #/a</button>
+        <button id='btn4'> pushState ?id=190</button>
+        <button id='btn5'> replaceState #/b</button>
+        <a href="http://localhost:3001/index.html#190">#/login</a>
+        <a href="http://localhost:3001/index.html?id=190">?id=180</a>
+        <button id='btn1'>go back</button>
+    </div>
+</body>
+<script>
+    if ("onhashchange" in window) {
+        console.log("该浏览器支持 hashchange 事件!");
+    }
+    if ("onpopstate" in window) {
+        console.log("该浏览器支持 onpopstate 事件!");
+    }
+   
+  window.addEventListener('hashchange', () => {
+      alert('hashChange0');
+  })
+  window.onpopstate = () => {
+    alert('popState0');
+  }
+  var btn = document.getElementById('btn')
+  btn.onclick =() => {
+    window.history.pushState({a: 1}, 'title', '/path');
+    console.log(history)
+  }
+
+  var btn1 = document.getElementById('btn1')
+  btn1.onclick =() => {
+      history.back()
+  }
+  var btn2 = document.getElementById('btn2')
+  btn2.onclick =() => {
+    history.pushState({a: 1}, '', '#/a');
+  }
+  var btn4 = document.getElementById('btn4')
+  btn4.onclick =() => {
+    history.pushState({a: 4}, '', '?id=190');
+  }
+
+  var btn5 = document.getElementById('btn5')
+  btn5.onclick =() => {
+    history.replaceState({a: 1}, '', '#/b');
+  }
+  
+</script>
+</html>

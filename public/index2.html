@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+    <div>
+        2
+        <a href="http://localhost:3001/index.html">去index</a>
+        <button id='btn'>pushState</button>
+        <button id='btn1'>go back</button>
+    </div>
+</body>
+<script>
+    console.log(history, location)
+  window.addEventListener('hashChange', () => {
+    alert('hashChange2');
+  })
+  window.onpopstate = () => {
+    alert('popState2');
+  }
+  var btn = document.getElementById('btn')
+  btn.onclick =() => {
+    window.history.pushState({a: 1}, 'title', '/123');
+    console.log(history)
+  }
+
+  var btn1 = document.getElementById('btn1')
+  btn1.onclick =() => {
+      history.back()
+    console.log(history)
+  }
+</script>
+</html>
