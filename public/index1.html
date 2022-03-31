@@ -5,33 +5,135 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <style>
+      a {
+          margin: 0 10px;
+      }
+  </style>
 </head>
 <body>
     <div>
-        1
-        <a href="http://localhost:3001/index2.html">去index2</a>
-        <button id='btn'>pushState</button>
+        history 记录
+        <button id='btn'> pushState /path</button>
+        <button id='btn2'> pushState #/a</button>
+        <button id='btn4'> pushState ?id=190</button>
+        <button id='btn5'> replaceState #/b</button>
+        <a id="a1" href="#/login">#/login</a>
+        <a  href="?id=190">?id=180</a>
         <button id='btn1'>go back</button>
     </div>
 </body>
 <script>
-    console.log(history, location)
-  window.addEventListener('hashChange', () => {
-    alert('hashChange1');
-  })
-  window.onpopstate = () => {
-    alert('popState1');
-  }
-  var btn = document.getElementById('btn')
-  btn.onclick =() => {
-    window.history.pushState({a: 1}, 'title', '/123');
-    console.log(history)
-  }
+    if ("onhashchange" in window) {
+        console.log("该浏览器支持 hashchange 事件!");
+    }
+    if ("onpopstate" in window) {
+        console.log("该浏览器支持 onpopstate 事件!");
+    }
+  
 
-  var btn1 = document.getElementById('btn1')
-  btn1.onclick =() => {
-      history.back()
-    console.log(history)
-  }
+    class ListenersURl {
+        constructor() {
+            this.oldUrl = location.href;
+            this.newUrl = '';
+            this.oldLocation = {...location};
+            this.newLocation = {}
+            this.listeners ={
+                hash: [],
+                history: []
+            }
+            console.log(this.oldUrl, location)
+            this.init()
+        }
+
+        init() {
+            const originPushState = window.history.pushState;
+            const orignReplaceState = window.history.replaceState;
+
+
+            window.history.pushState = (...args) => {
+                originPushState.apply(window.history, args)
+                this.changeUrl()
+            }
+
+            window.history.replaceState = (...args) => {
+                orignReplaceState.apply(window.history, args)
+                this.changeUrl()
+            }
+
+            window.addEventListener('popstate', () => {
+                this.changeUrl()
+            })
+            window.addEventListener('hashchange', () => {
+                this.changeUrl()
+            })  
+        }
+        changeUrl() {
+            const newUrl = location.href;
+            if(newUrl !== this.oldUrl) {
+                this.newUrl = newUrl;
+                this.newLocation = { ...location };
+                this.checkUrl()
+            }
+        }
+        checkUrl() {
+            const {oldLocation, newLocation} = this;
+            const {hash, pathname} = oldLocation;
+            const {hash: newHash, pathname: newPathname} = newLocation;
+            if(hash !== newHash) {
+                this.on('hash');
+                return;
+            }
+            if(pathname !== newPathname) {
+                this.on('history')
+            }
+
+        }
+        addEventListener(name, fun) {
+            const funs =  this.listeners[name] || []
+            if(funs.indexOf(fun) > -1) return;
+            funs.push(fun)
+        }
+
+        on(name) {
+            this.oldLocation = {...location};
+            this.oldUrl = location.href;
+            const funs = this.listeners[name] || [];
+            funs.forEach(fun => {
+                fun(this.location)
+            });
+        }
+
+    }
+ 
+    const inst = new ListenersURl();
+    inst.addEventListener('hash', function() {
+        console.log('hashChange')
+    })
+    inst.addEventListener('history', function() {
+        console.log('hsitoryChange')
+    })
+
+    var btn = document.getElementById('btn')
+    btn.onclick =() => {
+        window.history.pushState({a: 1}, 'title', '/index1.html/path');
+    }
+    var btn1 = document.getElementById('btn1')
+    btn1.onclick =() => {
+        history.back()
+    }
+    var btn2 = document.getElementById('btn2')
+    btn2.onclick =() => {
+        history.pushState({a: 1}, '', '#/a');
+    }
+    var btn4 = document.getElementById('btn4')
+    btn4.onclick =() => {
+        history.pushState({a: 4}, '', '?id=190');
+    }
+
+    var btn5 = document.getElementById('btn5')
+    btn5.onclick =() => {
+        history.replaceState({a: 1}, '', '#/b');
+    }
 </script>
 </html>

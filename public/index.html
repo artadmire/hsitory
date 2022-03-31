@@ -18,8 +18,8 @@
         <button id='btn2'> pushState #/a</button>
         <button id='btn4'> pushState ?id=190</button>
         <button id='btn5'> replaceState #/b</button>
-        <a href="http://localhost:3001/index.html#190">#/login</a>
-        <a href="http://localhost:3001/index.html?id=190">?id=180</a>
+        <a id="a1" href="#/login">#/login</a>
+        <a  href="?id=190">?id=180</a>
         <button id='btn1'>go back</button>
     </div>
 </body>
@@ -60,6 +60,11 @@
   btn5.onclick =() => {
     history.replaceState({a: 1}, '', '#/b');
   }
+
+//   var a1 = document.getElementById('a1');
+//   a1.onclick = (e) => {
+//     e.preventDefault();
+//   }
   
 </script>
 </html>
